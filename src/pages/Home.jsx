@@ -9,22 +9,27 @@ export const Home = () => {
   const location = useLocation();
 
   useEffect(() => {
-    getTrending().then(data => setMovies(data.results));
+    getTrending()
+      .then(data => setMovies(data.results))
+      .catch(er => console.log(er));
   }, []);
 
   return (
-    <ul>
-      {movies.length > 0
-        ? movies.map(movie => {
-            return (
-              <li key={movie.id}>
-                <Link to={`/movies/${movie.id}`} state={{ from: location }}>
-                  {movie.title}
-                </Link>
-              </li>
-            );
-          })
-        : null}
-    </ul>
+    <>
+      <h1>Trending films</h1>
+      <ul>
+        {movies.length > 0
+          ? movies.map(movie => {
+              return (
+                <li key={movie.id}>
+                  <Link to={`/movies/${movie.id}`} state={{ from: location }}>
+                    {movie.title}
+                  </Link>
+                </li>
+              );
+            })
+          : null}
+      </ul>
+    </>
   );
 };

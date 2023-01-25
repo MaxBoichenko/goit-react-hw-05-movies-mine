@@ -3,9 +3,9 @@ import { getMovieDetails } from '../API/Api';
 
 import { useParams, Link, useLocation } from 'react-router-dom';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 
-export const MovieDetails = () => {
+const MovieDetails = () => {
   const [movie, setMovie] = useState();
   const { movieId } = useParams();
 
@@ -13,7 +13,9 @@ export const MovieDetails = () => {
   const backLinkHref = location.state?.from ?? '/';
 
   useEffect(() => {
-    getMovieDetails(movieId).then(setMovie);
+    getMovieDetails(movieId)
+      .then(setMovie)
+      .catch(er => console.log(er));
   }, [movieId]);
 
   if (!movieId || !movie) {
@@ -35,7 +37,7 @@ export const MovieDetails = () => {
         </div>
         <div>
           <h1>{movie.title}</h1>
-          <p>User Score: {movie.vote_average * 10} %</p>
+          <p>User Score: {Math.round(movie.vote_average * 10)} %</p>
           <h2>Overview</h2>
           <p>{movie.overview}</p>
           <h2>Genres</h2>
@@ -47,15 +49,22 @@ export const MovieDetails = () => {
         <h3>Additional information</h3>
         <ul>
           <li>
-            <Link to="cast">Cast</Link>
+            <Link to="cast" state={{ from: backLinkHref }}>
+              Cast
+            </Link>
           </li>
           <li>
-            <Link to="reviews">Reviews</Link>
+            <Link to="reviews" state={{ from: backLinkHref }}>
+              Reviews
+            </Link>
           </li>
         </ul>
       </section>
-
-      <Outlet />
+      <Suspense fallback={<div>Loading...</div>}>
+        <Outlet />
+      </Suspense>
     </>
   );
 };
+
+export default MovieDetails;

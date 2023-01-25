@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 
 import { getMovieReviews } from '../API/Api';
 
-export const Reviews = () => {
+const Reviews = () => {
   const [reviews, setReviews] = useState();
 
   const { movieId } = useParams();
@@ -16,14 +16,18 @@ export const Reviews = () => {
 
   return (
     <ul>
-      {reviews.map(review => {
-        return (
-          <li key={review.id}>
-            <h3>Author: {review.author}</h3>
-            <p>{review.content}</p>
-          </li>
-        );
-      })}
+      {reviews.length > 0
+        ? reviews.map(review => {
+            return (
+              <li key={review.id}>
+                <h3>Author: {review.author}</h3>
+                <p>{review.content}</p>
+              </li>
+            );
+          })
+        : 'Отзывов нет '}
     </ul>
   );
 };
+
+export default Reviews;
